@@ -1,4 +1,4 @@
-import numpy as np # type: ignore
+import numpy as np
 
 #Parameters:
 
@@ -9,8 +9,11 @@ rho_steel = 7800 # measured in  kg/m3.
 d = 0.015 # density converted to m from cm (1.5cm).
 μ_air =  1.827*10-5 # measured in kg/(m⋅s).
 
+# Drag coefficient:
+r = d / 2
+volume = (4 / 3) * np.pi * r**3
+mass = rho_steel *volume
+cD = 6 * np.pi * μ_air 
 
-
-
-
-#Returns
+def ode_freefall_euler(g0, dg_dz, cd_star, H, dt):
+    t, z, v = [0], [0], [0]
