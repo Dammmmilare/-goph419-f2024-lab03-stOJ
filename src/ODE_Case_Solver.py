@@ -19,6 +19,61 @@ cd_star = cD / mass
 def ode_freefall_euler(g0, dg_dz, cd_star, H, dt):
     t, z, v = [0], [0], [0]
     while z[-1] < H:
-        g = g0 - dg_dz *z[-1]
+        g = g0 - dg_dz * z[-1]
+        drag = cd_star * v[-1]
+        a = g - drag
+        v_new = v[-1] + a * dt
+        z_new = z[-1] + v[-1] * dt
+        t_new = t[-1] + dt
+        if z_new > H:
+            dt_last = (H -z[-1]) / v[-1]
+            z_new = H
+            t_new = t[-1] + dt_last
+            v_new = v[-1] + a * dt_last
+        t.append(t_new)
+        z.append(z_new)
+        v.append(v_new)
+    return np.array(t), np.array(z), np.array(v)
 
-                                     
+def ode_freefall_rk4(go, dg_dz, cd_star, H, dt):
+    t, z, v = [0], [0], [0]
+    while z[-1] < H:
+        g = g0 - dg_dz * z[-1]
+        drag = cd_star * v[-1]
+
+        def acceleration(z, v):
+            return g - cd_star * v #* z
+        
+        def dz_dt(v):
+            return v
+
+        k1_v = acceleration(z[-1], v[-1]) * dt
+        k1_z = dz_dt(v[-1]) * dt
+
+        k2_v = acceleration(z[-1] + k1_z / 2, v[-1] + k1_v / 2) * dt
+        k2_z = dz_dt(v[-1] + k1_v / 2) * dt
+
+        k3_v = acceleration(z[-1] + k2_z / 2, v[-1] + k2_v / 2) * dt
+        k3_z = dz_dt(v[-1] + k2_v / 2) * dt
+
+        k4_v = acceleration(z[-1] + k3_z / 2, v[-1] + k3_v / 2) * dt
+        k4_z = dz_dt(v[-1] + k3_v) * dt
+
+        dv = (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6
+        dz = (k1_z + 2 * k2_z + 2 * k3_z + k4_z) / 6
+
+        v_new = v[-1] + dv
+        z_new = z[-1] + dv
+        t_new = t[-1] + dv
+
+        if z_new > H: 
+            dt_last = (H -z[-1]) / v[-1]
+            z_new = H
+            t_new = t[-1] + dt_last
+            v_new = v[-1] + acceleration(z[-1], v[-1]) * dt_last
+        t.append(t_new)
+        z.append(z_new)
+        v.append(v_new)
+    return np.array(t), np.array(z), np.array(v)
+
+    
