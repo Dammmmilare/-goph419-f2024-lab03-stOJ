@@ -76,4 +76,39 @@ def ode_freefall_rk4(go, dg_dz, cd_star, H, dt):
         v.append(v_new)
     return np.array(t), np.array(z), np.array(v)
 
+import time
+import numpy as np 
+import matplotlib.pyplot as plt
+
+def measure_simulation_time(solver, g0, dg_dz, cd_star, heights, dt_values):
+    simulation_times = {H: [] for H in heights}
+
+    for H in heights:
+        for dt in dt_values:
+            start_time = time.perf_counter()
+            solver(g0, dg_dz, cd_star, H, dt)
+            end_time = time.perf_counter()
+            simulation_times[H].append(end_time - start_time)
     
+    return simulation_times
+
+# heights in meters
+heights = [10, 20, 40]
+dt_values = np.logspace(-4, -1, 10)
+
+euler_times = measure_simulation_time(ode_freefall_euler, g0, dg_dz, cd_star, heights, dt_values )
+rk4_times = measure_simulation_time(ode_freefall_rk4, g0, dg_dz, cd_star, heights, dt_values)
+
+plt.figure(figsize=(12, 6))
+for H in heights:
+    plt.plot(dt_values, euler_times[H], label=f"Euler H={H}", marker='o', linestyle='--')
+    plt.plot(dt_values, rk4_times[H], label=f"RK4 H={H}", marker='x', linestyle='-')
+
+plt.xscale('log')
+plt.yscale('log')
+plt.xlabel("Time Step  Δt (s)")
+plt.ylabel("Simulatiofn Time vs. Time step for Euler and RK4 Methods")
+plt.legend()
+plt.grid(True, which="both", linestyle="--", linewidth=0.5)
+plt.show()
+
