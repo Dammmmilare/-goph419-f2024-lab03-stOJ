@@ -76,6 +76,7 @@ def ode_freefall_rk4(go, dg_dz, cd_star, H, dt):
         v.append(v_new)
     return np.array(t), np.array(z), np.array(v)
 
+# Test case 1.
 import time
 import numpy as np 
 import matplotlib.pyplot as plt
@@ -107,7 +108,8 @@ for H in heights:
 plt.xscale('log')
 plt.yscale('log')
 plt.xlabel("Time Step  Δt (s)")
-plt.ylabel("Simulatiofn Time vs. Time step for Euler and RK4 Methods")
+plt.ylabel("Simulation time (s)")
+plt.title("Simulatiofn Time vs. Time step for Euler and RK4 Methods")
 plt.legend()
 plt.grid(True, which="both", linestyle="--", linewidth=0.5)
 plt.show()
