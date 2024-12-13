@@ -1,4 +1,4 @@
-# Test case 1.
+#Test Case 2.
 import time
 import numpy as np 
 import matplotlib.pyplot as plt
@@ -16,7 +16,7 @@ def measure_simulation_time(solver, g0, dg_dz, cd_star, heights, dt_values):
     
     return simulation_times
 
-# Parameter definition and 
+# Parameter definition and coefficient calculation.
 #Parameters:
 phi = 51.0486 # Latitude in Calgary,Alberta.
 g0 = 9.811636 # measured in  m/s^2.
@@ -52,4 +52,3 @@ plt.title("Simulatiofn Time vs. Time step for Euler and RK4 Methods")
 plt.legend()
 plt.grid(True, which="both", linestyle="--", linewidth=0.5)
 plt.show()
-
