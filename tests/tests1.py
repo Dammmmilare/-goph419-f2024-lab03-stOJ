@@ -44,3 +44,32 @@ for H in heights:
         _, _, v_rk4 = ode_freefall_rk4(g0, dg_dz, cd_star, H, dt)
         euler_times[H].append(v_euler[-1])
         rk4_times[H].append(v_rk4[-1])
+
+plt.figure(figsize=(12, 6))
+for H in heights:
+    plt.plot(dt_values, euler_times[H], label=f"Euler H={H} m", marker='o', linestyle='--')
+    plt.plot(dt_values, rk4_times[H], label=f"RK4 H={H} m", marker='x', linestyle='-')
+
+plt.xscale('log')
+plt.xlabel("Time Step  Δt (s)")
+plt.ylabel("Total Drop Time t* (s)")
+plt.title("Simulatiofn Time vs. Time step for Euler and RK4 Methods")
+plt.legend()
+plt.grid(True, which="both", linestyle="--", linewidth=0.5)
+plt.show()
+
+plt.figure(figsize=(12, 6))
+for H in heights:
+    euler_errors = compute_relative_error(ref_times[H], np.array(euler_times[H]))
+    rk4_errors = compute_relative_error(ref_times[H], np.array(rk4_times[H]))
+    plt.plot(dt_values, euler_errors[H], label=f"Euler Error H={H} m", marker='o', linestyle='--')
+    plt.plot(dt_values, rk4_times[H], label=f"RK4 Error H={H} m", marker='x', linestyle='-')
+
+plt.xscale('log')
+plt.yscale('log')
+plt.xlabel("Time Step  Δt (s)")
+plt.ylabel("Relative Error")
+plt.title("Relative Error vs. Time step Δt")
+plt.legend()
+plt.grid(True, which="both", linestyle="--", linewidth=0.5)
+plt.show()
