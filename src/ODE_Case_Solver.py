@@ -3,10 +3,10 @@ import numpy as np
 #Parameters:
 phi = 51.0486 # Latitude in Calgary,Alberta.
 g0 = 9.811636 # measured in  m/s^2.
-dg_dz = 3.086*10-6 #g′ ≈ 0.3086 mGal/m where 1 Gal = 1 cm/s2, so in SI units, g′ ≈ (m/s2)/m.
+dg_dz = 3.086*10**-6 #g′ ≈ 0.3086 mGal/m where 1 Gal = 1 cm/s2, so in SI units, g′ ≈ (m/s2)/m.
 rho_steel = 7800 # measured in  kg/m3.
 d = 0.015 # density converted to m from cm (1.5cm).
-μ_air =  1.827*10-5 # measured in kg/(m⋅s).
+μ_air =  1.827*10**-5 # measured in kg/(m⋅s).
 
 # Drag coefficient:
 r = d / 2
@@ -35,29 +35,26 @@ def ode_freefall_euler(g0, dg_dz, cd_star, H, dt):
         v.append(v_new)
     return np.array(t), np.array(z), np.array(v)
 
-def ode_freefall_rk4(go, dg_dz, cd_star, H, dt):
+def ode_freefall_rk4(g0, dg_dz, cd_star, H, dt):
     t, z, v = [0], [0], [0]
     while z[-1] < H:
         g = g0 - dg_dz * z[-1]
-        drag = cd_star * v[-1]
+        
 
         def acceleration(z, v):
-            return g - cd_star * v #* z
+            return g - cd_star * v
         
-        def dz_dt(v):
-            return v
-
         k1_v = acceleration(z[-1], v[-1]) * dt
-        k1_z = dz_dt(v[-1]) * dt
+        k1_z = (v[-1]) * dt
 
         k2_v = acceleration(z[-1] + k1_z / 2, v[-1] + k1_v / 2) * dt
-        k2_z = dz_dt(v[-1] + k1_v / 2) * dt
+        k2_z = (v[-1] + k1_v / 2) * dt
 
         k3_v = acceleration(z[-1] + k2_z / 2, v[-1] + k2_v / 2) * dt
-        k3_z = dz_dt(v[-1] + k2_v / 2) * dt
+        k3_z = (v[-1] + k2_v / 2) * dt
 
         k4_v = acceleration(z[-1] + k3_z / 2, v[-1] + k3_v / 2) * dt
-        k4_z = dz_dt(v[-1] + k3_v) * dt
+        k4_z = (v[-1] + k3_v) * dt
 
         dv = (k1_v + 2 * k2_v + 2 * k3_v + k4_v) / 6
         dz = (k1_z + 2 * k2_z + 2 * k3_z + k4_z) / 6
@@ -75,4 +72,3 @@ def ode_freefall_rk4(go, dg_dz, cd_star, H, dt):
         z.append(z_new)
         v.append(v_new)
     return np.array(t), np.array(z), np.array(v)
-
