@@ -50,20 +50,20 @@ alpha =  1e-2
 dt = 1e-4
 heights = [10, 20, 40]
 
-#Sensitive results
+#Initalizing Sensitive results
 euler_sensitivities = {H: {} for H in heights}
 rk4_sensitivities = {H: {} for H in heights}
 
 #Computing sensitivities for each height
 for H in heights:
-    euler_sensitivities[H]['g0'], euler_sensitivities[H]['dgdz'], euler_sensitivities[H]['cd_star'] = compute_sensitivity(
+    euler_sensitivities[H]['g0'], euler_sensitivities[H]['dg_dz'], euler_sensitivities[H]['cd_star'] = compute_sensitivity(
         ode_freefall_euler, g0, dg_dz, cd_star, H, dt, alpha
     )
-    rk4_sensitivities[H]['g0'], rk4_sensitivities[H]['dgdz'], rk4_sensitivities[H]['cd_star'] = compute_sensitivity(
+    rk4_sensitivities[H]['g0'], rk4_sensitivities[H]['dg_dz'], rk4_sensitivities[H]['cd_star'] = compute_sensitivity(
         ode_freefall_rk4, g0, dg_dz, cd_star, H, dt, alpha
     )
 
-#Plot results
+#Plotting our results
 labels = ['g0', 'dg_dz', 'cd_star']
 for H in heights:
     plt.figure(figsize=(10, 5))
@@ -75,5 +75,5 @@ for H in heights:
     plt.title(f"Sensitivity of Drop Time for H = {H} m")
     plt.ylabel("Change in Drop Time (s)")
     plt.legend()
-    plt.grid(axis='', linestyle='', linewidth=0.5)
+    plt.grid(linestyle='', linewidth=0.5)
     plt.show()
