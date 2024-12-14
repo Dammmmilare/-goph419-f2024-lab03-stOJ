@@ -1,7 +1,12 @@
 #Test Case 2.
 import time
-import numpy as np 
+import sys
+import os
+import numpy as np
 import matplotlib.pyplot as plt
+ 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from src.ODE_Case_Solver import ode_freefall_euler, ode_freefall_rk4
 
 def measure_simulation_time(solver, g0, dg_dz, cd_star, heights, dt_values):
@@ -20,10 +25,10 @@ def measure_simulation_time(solver, g0, dg_dz, cd_star, heights, dt_values):
 #Parameters:
 phi = 51.0486 # Latitude in Calgary,Alberta.
 g0 = 9.811636 # measured in  m/s^2.
-dg_dz = 3.086*10-6 #g′ ≈ 0.3086 mGal/m where 1 Gal = 1 cm/s2, so in SI units, g′ ≈ (m/s2)/m.
+dg_dz = 3.086*10**-6 #g′ ≈ 0.3086 mGal/m where 1 Gal = 1 cm/s2, so in SI units, g′ ≈ (m/s2)/m.
 rho_steel = 7800 # measured in  kg/m3.
 d = 0.015 # density converted to m from cm (1.5cm).
-μ_air =  1.827*10-5 # measured in kg/(m⋅s).
+μ_air =  1.827*10**-5 # measured in kg/(m⋅s).
 
 # Drag coefficient:
 r = d / 2
