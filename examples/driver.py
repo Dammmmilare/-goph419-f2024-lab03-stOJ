@@ -63,6 +63,11 @@ for H in heights:
         ode_freefall_rk4, g0, dg_dz, cd_star, H, dt, alpha
     )
 
+#Defining directory for saving plots
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+output_dir = os.path.join(root_dir, "figures")
+os.makedirs(output_dir, exist_ok=True)
+
 #Plotting our results
 labels = ['g0', 'dg_dz', 'cd_star']
 for H in heights:
@@ -74,6 +79,8 @@ for H in heights:
     plt.bar(labels, rk4_values, alpha=0.6, label="rk4")
     plt.title(f"Sensitivity of Drop Time for H = {H} m")
     plt.ylabel("Change in Drop Time (s)")
+    plt.xlabel("Parameter")
     plt.legend()
     plt.grid(linestyle='', linewidth=0.5)
+    plt.savefig(os.path.join(output_dir, "sensitivity_drop_time_vs_parameter_.png"))
     plt.show()

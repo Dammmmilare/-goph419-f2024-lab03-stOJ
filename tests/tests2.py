@@ -41,6 +41,11 @@ cd_star = cD / mass
 heights = [10, 20, 40]
 dt_values = np.logspace(-4, -1, 10)
 
+#Defining directory for saving plots
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+output_dir = os.path.join(root_dir, "figures")
+os.makedirs(output_dir, exist_ok=True)
+
 euler_times = measure_simulation_time(ode_freefall_euler, g0, dg_dz, cd_star, heights, dt_values )
 rk4_times = measure_simulation_time(ode_freefall_rk4, g0, dg_dz, cd_star, heights, dt_values)
 
@@ -56,4 +61,5 @@ plt.ylabel("Simulation time (s)")
 plt.title("Simulation Time vs. Time step for Euler and RK4 Methods")
 plt.legend()
 plt.grid(True, which="both", linestyle="--", linewidth=0.5)
+plt.savefig(os.path.join(output_dir, "simulation_time_vs_time_step.png"))
 plt.show()

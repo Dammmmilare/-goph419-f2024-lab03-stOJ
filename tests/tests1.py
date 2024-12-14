@@ -32,16 +32,18 @@ heights = [10, 20, 40]
 dt_values = np.logspace(-4, -1, 10)
 dt_ref = 1e-5
 
+#Computing reference times.
 euler_times = {H: [] for H in heights}
 rk4_times = {H: [] for H in heights}
 ref_times = {}
 
-
+#Computing reference times using dt_ref
 for H in heights:
     _, _, v_euler = ode_freefall_euler(g0, dg_dz, cd_star, H, dt_ref)
     _, _, v_rk4 = ode_freefall_rk4(g0, dg_dz, cd_star, H, dt_ref)
     ref_times[H] = v_rk4[-1]
 
+#Computing drop times for dt in dt_values for RK4 and Euler.
 for H in heights:
     for dt in dt_values:
         _, _, v_euler = ode_freefall_euler(g0, dg_dz, cd_star, H, dt)
@@ -49,6 +51,13 @@ for H in heights:
         euler_times[H].append(v_euler[-1])
         rk4_times[H].append(v_rk4[-1])
 
+
+#Defining directory for saving plots
+root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+output_dir = os.path.join(root_dir, "figures")
+os.makedirs(output_dir, exist_ok=True)
+
+#Plotting our total drop time against time step.
 plt.figure(figsize=(12, 6))
 for H in heights:
     plt.plot(dt_values, euler_times[H], label=f"Euler H={H} m", marker='o', linestyle='--')
@@ -57,15 +66,18 @@ for H in heights:
 plt.xscale('log')
 plt.xlabel("Time Step  Δt (s)")
 plt.ylabel("Total Drop Time t* (s)")
-plt.title("Simulatiofn Time vs. Time step for Euler and RK4 Methods")
+plt.title("Simulation Time vs. Time step for Euler and RK4 Methods")
 plt.legend()
 plt.grid(True, which="both", linestyle="--", linewidth=0.5)
+plt.savefig(os.path.join(output_dir, "total_drop_time_vs_dt.png"))
 plt.show()
 
+#Plotting relative error vs time step
 plt.figure(figsize=(12, 6))
 for H in heights:
     euler_errors = compute_relative_error(ref_times[H], np.array(euler_times[H]))
     rk4_errors = compute_relative_error(ref_times[H], np.array(rk4_times[H]))
+
     plt.plot(dt_values, euler_errors[H], label=f"Euler Error H={H} m", marker='o', linestyle='--')
     plt.plot(dt_values, rk4_times[H], label=f"RK4 Error H={H} m", marker='x', linestyle='-')
 
@@ -76,4 +88,6 @@ plt.ylabel("Relative Error")
 plt.title("Relative Error vs. Time step Δt")
 plt.legend()
 plt.grid(True, which="both", linestyle="--", linewidth=0.5)
+plt.savefig(os.path.join(output_dir, "relative_error_vs_dt.png"))
 plt.show()
+
